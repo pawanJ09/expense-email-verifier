@@ -2,6 +2,7 @@ from botocore.exceptions import ClientError
 import boto3
 import json
 import os
+import base64
 
 ses_client = boto3.client('ses')
 
@@ -15,6 +16,8 @@ def lambda_handler(event, context):
         print(f'Incoming API Gateway Path: {event_path}')
         body = event['body']
         print(f'Incoming API Gateway Body: {body}')
+        if event['isBase64Encoded']:
+            body = base64.b64decode(event['body'])
         req = json.loads(body)
         if req['user-email']:
             print(f'Fetching verified identities from SES')
